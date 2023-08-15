@@ -2,15 +2,148 @@ openapi: 3.0.0
 info:
   version: '1.0.0'
   title: File API
+  
+security:
+  - BasicAuth: []
 
 paths:
-  /status:
-    get:
-      summary: Status
-      description: Get Status.
+  /files:
+    post:
+      summary: Upload
+      description: File upload endpoint
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object 
+              required:
+                - name
+                - contentType
+                - meta
+                - source
+                - content
+              properties:
+                name:
+                  type: string
+                contentType:
+                  type: string
+                meta: 
+                  type: string
+                source:
+                  type: string
+                expireTime:
+                  type: string
+                content:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: File upload successful
+          content:
+            application/json:
+              schema:
+                items:
+                  type: object
+                  properties:
+                    token:
+                      type: string
+        '400':
+          description: Bad Request
+        '503':
+          description: Service Unavailable
+
+  /files/metas:
+    post:
+      summary: Retrieve file info
+      description: Get file info to a list of tokenss
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              items:
+                type: object
+                properties:
+                  token:
+                    type: array
+                    items:
+                      type: string
       responses:
         '200':
-          description: It's a response.
+          description: File info retrieved
+          content:
+            application/json:
+              schema:
+                items:
+                  type: object
+                  properties:
+                    files:
+                      type: object
+                      properties:
+                        file-token-1:
+                          type: object
+                          properties:
+                            token:
+                              type: string
+                            filename:
+                              type: string
+                            size:
+                              type: string
+                            contentType:
+                              type: string
+                            createTime:
+                              type: string
+                            meta:
+                              type: object
+                            
+                        
+        '400':
+          description: Bad Request
+        '503':
+          description: Service Unavailable              
+  /files/{token}:
+    get:
+      summary: Download file
+      description: this API is for file download
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operation performed successfully.
+          content:
+            any:
+              schema:
+                format: binary      
+        '400':
+          description: Bad Request
+        '503':
+          description: Service Unavailable
+    delete:
+      summary: Delete file
+      description: this API is for file delete
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+            
+      responses:
+        '200':
+          description: File Deleted
+        '400':
+          description: Bad Request
+        '503':
+          description: Service Unavailable
 
-security:
-  - basicAuth: []
+          
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic

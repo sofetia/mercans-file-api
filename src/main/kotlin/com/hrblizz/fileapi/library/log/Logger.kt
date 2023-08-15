@@ -1,9 +1,12 @@
 package com.hrblizz.fileapi.library.log
 
+import com.hrblizz.fileapi.data.repository.LogRepository
 import org.springframework.stereotype.Component
 
 @Component
-class Logger {
+class Logger (
+    private val logRepository: LogRepository
+) {
     fun info(logItem: LogItem) {
         write("info", logItem)
     }
@@ -22,5 +25,8 @@ class Logger {
 
     private fun write(logLevel: String, logItem: LogItem) {
         println("$logLevel: $logItem")
+        logRepository.save(
+            LogItem("$logLevel: $logItem")
+        )
     }
 }
