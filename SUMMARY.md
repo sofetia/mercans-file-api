@@ -28,6 +28,12 @@ The exception handling also needs to be better, with the throw commands moved ou
 The service functions (del, save, download, etc) could be split into smaller parts that could be used in some other code.
 There are more little things as well and probably a lot I don't even know about. The language is new to me and so are the conventions of it.
 
+##What the program does
+
+Well it captures api calls and responds with the data as described in api doc.
+The main files to look through are filecontroller and fileservice.
+I split the del and upload etc, commands in the service files so they could be reused (for example later for bulk delete or etc)
+
 
 ## Starting the program
 
